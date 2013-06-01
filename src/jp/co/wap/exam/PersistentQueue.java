@@ -13,7 +13,8 @@ import java.util.NoSuchElementException;
  * @param <E>
  */
 public class PersistentQueue<E> {
-	private int head, tail;
+	private int headIdx, tailIdx;
+	private E head, tail;
 	private List<E> queue;
 
 	/**
@@ -23,13 +24,16 @@ public class PersistentQueue<E> {
 		// modify this constructor if necessary,but do not remove default
 		// constructor
 		queue = new LinkedList<E>();
-		head = 0;
-		tail = 0;
+		headIdx = 0;
+		tailIdx = 0;
 	}
 
-	private PersistentQueue(List<E> queue, int head, int tail) {
+	private PersistentQueue(List<E> queue, int headIdx, int tailIdx, E head,
+			E tail) {
 		// modify or remove this constructor if necessary
 		this.queue = queue;
+		this.headIdx = headIdx;
+		this.tailIdx = tailIdx;
 		this.head = head;
 		this.tail = tail;
 	}
@@ -59,15 +63,17 @@ public class PersistentQueue<E> {
 			throw new IllegalArgumentException();
 		}
 		List<E> queueRef = queue;
-		if (queue.size() > tail) {
-			if (!queue.get(tail).equals(e)) {
-				queueRef = new LinkedList<E>(queue.subList(head, tail));
+		if (queue.size() > tailIdx) {
+			if (!tail.equals(e)) {
+				queueRef = new LinkedList<E>(queue.subList(headIdx, tailIdx));
 				queueRef.add(e);
+				return new PersistentQueue<E>(queueRef, 0, tailIdx - headIdx
+						+ 1, head, e);
 			}
 		} else {
 			queueRef.add(e);
 		}
-		return new PersistentQueue<E>(queueRef, head, tail + 1);
+		return new PersistentQueue<E>(queueRef, headIdx, tailIdx + 1, head, e);
 	}
 
 	/**
@@ -91,7 +97,8 @@ public class PersistentQueue<E> {
 		if (empty()) {
 			throw new NoSuchElementException();
 		}
-		return new PersistentQueue<E>(queue, head + 1, tail);
+		return new PersistentQueue<E>(queue, headIdx + 1, tailIdx,
+				queue.get(headIdx + 1), tail);
 	}
 
 	/**
@@ -114,7 +121,7 @@ public class PersistentQueue<E> {
 		if (empty()) {
 			throw new NoSuchElementException();
 		}
-		return queue.get(head);
+		return head;
 	}
 
 	/**
@@ -124,7 +131,7 @@ public class PersistentQueue<E> {
 	 */
 	public int size() {
 		// modify this method if necessary.
-		return tail - head;
+		return tailIdx - headIdx;
 	}
 
 	private boolean empty() {
@@ -135,7 +142,7 @@ public class PersistentQueue<E> {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		for (int i = head; i < tail; i++) {
+		for (int i = headIdx; i < tailIdx; i++) {
 			sb.append(queue.get(i)).append("\t");
 		}
 		return sb.toString();
