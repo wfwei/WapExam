@@ -1,33 +1,62 @@
 package jp.co.wap.exam;
 
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestPersistentQueue<E> {
 
+	PersistentQueue<String> queue = new PersistentQueue<String>();
+
 	@BeforeClass
 	public static void bf() {
-		System.out.println("test on Problem1");
-	}
-
-	@Before
-	public void overhead() {
-		// intervals.clear();
+		System.out.println("test on PersistentQueue");
 	}
 
 	@Test
-	public void test(){
-		
-	}
-	
-	public static void main(String[] args) {
-		PersistentQueue<String> queue = new PersistentQueue<String>();
-		PersistentQueue<String> a = queue.enqueue("hello").enqueue(" world");
-		System.out.println(a.enqueue(":").enqueue("wfw"));
-		System.out.println(a.enqueue("?").dequeue().dequeue().enqueue("ok")
-				.dequeue());
-		System.out.println(a);
+	public void testCase0() {
+		PersistentQueue<String> a = queue.enqueue("hello").enqueue("world");
+		PersistentQueue<String> b = a.dequeue().dequeue().enqueue("wfw");
+		PersistentQueue<String> c = a.enqueue("!");
+		PersistentQueue<String> d = a.enqueue("!").dequeue();
+		assertEquals(a.toString(), "hello world ");
+		assertEquals(b.toString(), "wfw ");
+		assertEquals(c.toString(), "hello world ! ");
+		assertEquals(d.toString(), "world ! ");
 	}
 
+	@Test
+	public void testCase1() {
+		PersistentQueue<String> q1 = new PersistentQueue<String>()
+				.enqueue("aaa").enqueue("bbb").enqueue("ccc");
+		PersistentQueue<String> q2 = q1.enqueue(new String("ddd"));
+		Assert.assertEquals("1", "aaa", q2.peek());
+		Assert.assertEquals("1", "bbb", q2.dequeue().peek());
+		Assert.assertEquals("1", "ccc", q2.dequeue().dequeue().peek());
+		Assert.assertEquals("1", "ddd", q2.dequeue().dequeue().dequeue().peek());
+		// Assert.assertEquals("1","ddd",
+		// q2.dequeue().dequeue().dequeue().dequeue().peek());
+	}
+
+	@Test
+	public void testCase2() {
+		PersistentQueue<String> q1 = new PersistentQueue<String>();
+		PersistentQueue<String> q2 = q1.enqueue(new String("ddd"));
+		PersistentQueue<String> q3 = q2.enqueue(new String("eee"));
+		Assert.assertEquals("1", "ddd", q3.peek());
+		Assert.assertEquals("1", "eee", q3.dequeue().peek());
+		// Assert.assertEquals("1","eee", q3.dequeue().dequeue().peek());
+
+	}
+
+	@Test
+	public void testCase3() {
+		PersistentQueue<String> q1 = new PersistentQueue<String>();
+		PersistentQueue<String> q2 = q1.enqueue(new String("ddd"));
+		PersistentQueue<String> q3 = q2.enqueue(new String("eee"));
+		Assert.assertEquals("1", "ddd", q3.peek());
+		Assert.assertEquals("1", "eee", q3.dequeue().peek());
+	}
 }

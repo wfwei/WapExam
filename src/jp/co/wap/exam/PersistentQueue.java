@@ -1,22 +1,27 @@
 package jp.co.wap.exam;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
  * The Queue class represents an immutable first-in-first-out (FIFO) queue of
  * objects.
  * <p>
+ * 
  * @param <E>
  */
 public class PersistentQueue<E> {
-	private int headIdx, tailIdx;
-	private E head, tail;
-	private List<E> queue;
-	
-	static final class PersisitentList<E> extends LinkedList<E>{
-		//TODO
+
+	private Entry<E> head, tail;
+	private int size = 0;
+
+	private static class Entry<E> {
+		E element;
+		Entry<E> next;
+
+		Entry(E element, Entry<E> next) {
+			this.element = element;
+			this.next = next;
+		}
 	}
 
 	/**
@@ -25,19 +30,15 @@ public class PersistentQueue<E> {
 	public PersistentQueue() {
 		// modify this constructor if necessary,but do not remove default
 		// constructor
-		queue = new LinkedList<E>();
-		headIdx = 0;
-		tailIdx = 0;
+		tail = head = new Entry<E>(null, null);
+		size = 0;
 	}
 
-	private PersistentQueue(List<E> queue, int headIdx, int tailIdx, E head,
-			E tail) {
+	private PersistentQueue(Entry<E> head, Entry<E> tail, int size) {
 		// modify or remove this constructor if necessary
-		this.queue = queue;
-		this.headIdx = headIdx;
-		this.tailIdx = tailIdx;
 		this.head = head;
 		this.tail = tail;
+		this.size = size;
 	}
 
 	// add other constructor if necessary
@@ -64,18 +65,27 @@ public class PersistentQueue<E> {
 		if (e == null) {
 			throw new IllegalArgumentException();
 		}
-		List<E> queueRef = queue;
-		if (queue.size() > tailIdx) {
-			if (!tail.equals(e)) {
-				queueRef = new LinkedList<E>(queue.subList(headIdx, tailIdx));
-				queueRef.add(e);
-				return new PersistentQueue<E>(queueRef, 0, tailIdx - headIdx
-						+ 1, head, e);
-			}
-		} else {
-			queueRef.add(e);
+		if (tail.next == null) {
+			tail.next = new Entry<E>(e, null);
 		}
-		return new PersistentQueue<E>(queueRef, headIdx, tailIdx + 1, head, e);
+		if (tail.next.element.equals(e)) {
+			return new PersistentQueue<E>(head, tail.next, size + 1);
+		} else {
+			Entry<E> newHead, newTail, tmp;
+			int newSize = 0;
+			newTail = newHead = new Entry<E>(null, null);
+			tmp = head;
+			while (newSize < size) {
+				newTail.next = new Entry<E>(tmp.next.element, null);
+				newTail = newTail.next;
+				tmp = tmp.next;
+				newSize++;
+			}
+			newTail.next = new Entry<E>(e, null);
+			newTail = newTail.next;
+			newSize++;
+			return new PersistentQueue<E>(newHead, newTail, newSize);
+		}
 	}
 
 	/**
@@ -99,8 +109,7 @@ public class PersistentQueue<E> {
 		if (empty()) {
 			throw new NoSuchElementException();
 		}
-		return new PersistentQueue<E>(queue, headIdx + 1, tailIdx,
-				queue.get(headIdx + 1), tail);
+		return new PersistentQueue<E>(head.next, tail, size - 1);
 	}
 
 	/**
@@ -123,7 +132,7 @@ public class PersistentQueue<E> {
 		if (empty()) {
 			throw new NoSuchElementException();
 		}
-		return head;
+		return head.next.element;
 	}
 
 	/**
@@ -133,7 +142,7 @@ public class PersistentQueue<E> {
 	 */
 	public int size() {
 		// modify this method if necessary.
-		return tailIdx - headIdx;
+		return size;
 	}
 
 	private boolean empty() {
@@ -142,10 +151,15 @@ public class PersistentQueue<E> {
 		return true;
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		for (int i = headIdx; i < tailIdx; i++) {
-			sb.append(queue.get(i)).append("\t");
+		Entry<E> cur = head;
+		int curSize = 0;
+		while (curSize < size) {
+			sb.append(cur.next.element).append(" ");
+			cur = cur.next;
+			curSize++;
 		}
 		return sb.toString();
 	}
