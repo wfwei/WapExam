@@ -16,6 +16,18 @@ public class TestPersistentQueue<E> {
 	}
 
 	@Test
+	public void testCase() {
+		PersistentQueue<Double> q = new PersistentQueue<Double>();
+		for (int i = 0; i < 100000; i++) {
+			q = q.enqueue(Math.random());
+			if (Math.random() > 0.5 && q.size() > 0)
+				q = q.dequeue();
+//			System.out.println(q.size());
+		}
+//		assertEquals("hello world ", "hello world ");
+	}
+
+	@Test
 	public void testCase0() {
 		PersistentQueue<String> a = queue.enqueue("hello").enqueue("world");
 		PersistentQueue<String> b = a.dequeue().dequeue().enqueue("wfw");
@@ -43,8 +55,8 @@ public class TestPersistentQueue<E> {
 	@Test
 	public void testCase2() {
 		PersistentQueue<String> q1 = new PersistentQueue<String>();
-		PersistentQueue<String> q2 = q1.enqueue(new String("ddd"));
-		PersistentQueue<String> q3 = q2.enqueue(new String("eee"));
+		PersistentQueue<String> q2 = q1.enqueue("ddd");
+		PersistentQueue<String> q3 = q2.enqueue("eee");
 		Assert.assertEquals("1", "ddd", q3.peek());
 		Assert.assertEquals("1", "eee", q3.dequeue().peek());
 		// Assert.assertEquals("1","eee", q3.dequeue().dequeue().peek());
@@ -54,9 +66,10 @@ public class TestPersistentQueue<E> {
 	@Test
 	public void testCase3() {
 		PersistentQueue<String> q1 = new PersistentQueue<String>();
-		PersistentQueue<String> q2 = q1.enqueue(new String("ddd"));
-		PersistentQueue<String> q3 = q2.enqueue(new String("eee"));
+		PersistentQueue<String> q2 = q1.enqueue("ddd");
+		PersistentQueue<String> q3 = q2.enqueue("eee");
 		Assert.assertEquals("1", "ddd", q3.peek());
 		Assert.assertEquals("1", "eee", q3.dequeue().peek());
 	}
+
 }

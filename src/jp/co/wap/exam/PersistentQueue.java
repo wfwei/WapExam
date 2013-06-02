@@ -11,37 +11,22 @@ import java.util.NoSuchElementException;
  */
 public class PersistentQueue<E> {
 
-	private Entry<E> head, tail;
-	private int size = 0;
-
-	private static class Entry<E> {
-		E element;
-		Entry<E> next;
-
-		Entry(E element, Entry<E> next) {
-			this.element = element;
-			this.next = next;
-		}
-	}
+	private final Entry<E> head, tail;/* head and tail of the PersistentQueue */
+	private final int size; /* size of PersistentQueue */
 
 	/**
-	 * require default constructor.
+	 * default cosntructor
 	 */
 	public PersistentQueue() {
-		// modify this constructor if necessary,but do not remove default
-		// constructor
 		tail = head = new Entry<E>(null, null);
 		size = 0;
 	}
 
 	private PersistentQueue(Entry<E> head, Entry<E> tail, int size) {
-		// modify or remove this constructor if necessary
 		this.head = head;
 		this.tail = tail;
 		this.size = size;
 	}
-
-	// add other constructor if necessary
 
 	/**
 	 * Returns the queue that adds an item into the tail of this queue without
@@ -61,12 +46,13 @@ public class PersistentQueue<E> {
 	 * @throws IllegalArgumentException
 	 */
 	public PersistentQueue<E> enqueue(E e) {
-		// TODO:make this method faster
 		if (e == null) {
 			throw new IllegalArgumentException();
 		}
-		if (tail.next == null) {
-			tail.next = new Entry<E>(e, null);
+		synchronized (tail) {
+			if (tail.next == null) {
+				tail.next = new Entry<E>(e, null);
+			}
 		}
 		if (tail.next.element.equals(e)) {
 			return new PersistentQueue<E>(head, tail.next, size + 1);
@@ -105,7 +91,6 @@ public class PersistentQueue<E> {
 	 * @throws java.util.NoSuchElementException
 	 */
 	public PersistentQueue<E> dequeue() {
-		// TODO:make this method faster
 		if (empty()) {
 			throw new NoSuchElementException();
 		}
@@ -128,7 +113,6 @@ public class PersistentQueue<E> {
 	 * @throws java.util.NoSuchElementException.
 	 */
 	public E peek() {
-		// modify this method if needed
 		if (empty()) {
 			throw new NoSuchElementException();
 		}
@@ -136,15 +120,15 @@ public class PersistentQueue<E> {
 	}
 
 	/**
-	 * Returns the number of objects in this queue. *
-	 * 
-	 * @return
+	 * Returns the number of objects in this queue.
 	 */
 	public int size() {
-		// modify this method if necessary.
 		return size;
 	}
 
+	/**
+	 * judge if PersistentQueue is empty.
+	 */
 	private boolean empty() {
 		if (size() > 0)
 			return false;
@@ -162,5 +146,18 @@ public class PersistentQueue<E> {
 			curSize++;
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Single Linked List Node
+	 */
+	private static class Entry<E> {
+		E element;
+		Entry<E> next;
+
+		Entry(E element, Entry<E> next) {
+			this.element = element;
+			this.next = next;
+		}
 	}
 }

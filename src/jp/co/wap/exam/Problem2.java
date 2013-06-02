@@ -9,12 +9,10 @@ import jp.co.wap.exam.lib.Interval;
 
 public class Problem2 {
 
-	/**
-	 * 时间复杂度O(NlogN),空间复杂度:O(1)，需要改变原list元素顺序
-	 */
+	/* Time Complexity:O(NlogN) Space Complexity:O(1) Parameter is changed */
 	public int getMaxWorkingTime(List<Interval> intervals) {
-		
-		if(intervals == null || intervals.size()==0){
+
+		if (intervals == null || intervals.size() == 0) {
 			return 0;
 		}
 
@@ -32,30 +30,28 @@ public class Problem2 {
 
 		final int max = 24 * 60 + 1;
 		final int[] dp = new int[max];
-		
-		int dpi=1;
-		for(Interval itv:intervals){
+
+		int dpi = 1;
+		for (Interval itv : intervals) {
 			int bt = itv.getBeginMinuteUnit();
 			int et = itv.getEndMinuteUnit();
-			while(dpi<=et){
-				if(dp[dpi]<dp[dpi-1])
+			while (dpi <= et) {
+				if (dp[dpi] < dp[dpi - 1])
 					dp[dpi] = dp[dpi - 1];
 				dpi++;
 			}
-			int lastn = bt > 0?dp[bt-1]:0;
+			int lastn = bt > 0 ? dp[bt - 1] : 0;
 			if (lastn + itv.getIntervalMinute() > dp[et])
 				dp[et] = lastn + itv.getIntervalMinute();
 		}
 
-		return dp[dpi-1];
+		return dp[dpi - 1];
 	}
 
-	/**
-	 * 时间复杂度O(1),空间复杂度:O(N)
-	 */
-	public int getMaxWorkingTime2(List<Interval> intervals) {
-		
-		if(intervals == null || intervals.size()==0){
+	/* Time Complexity:O(1)(Not so good in test) Space Complexity:O(N) */
+	public int getMaxWorkingTime1(List<Interval> intervals) {
+
+		if (intervals == null || intervals.size() == 0) {
 			return 0;
 		}
 
@@ -84,10 +80,8 @@ public class Problem2 {
 						dp[et] = lastn + itv.getIntervalMinute();
 				}
 			}
-				
 		}
-
-		return dp[max-1];
+		return dp[max - 1];
 	}
 
 }
