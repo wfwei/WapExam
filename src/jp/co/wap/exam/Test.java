@@ -12,5 +12,8 @@ public class Test {
 		strings.add("Aha!"); // will succeed
 		strings.add("oh,shit");
 		System.out.println(unmodifiable);
+		final int a[] = {1, 2};
+		a[0] = 2;
+		System.out.println(a[0]);
 	}
 }

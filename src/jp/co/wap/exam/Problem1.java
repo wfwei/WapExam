@@ -13,6 +13,7 @@ public class Problem1 {
 		int maxCount = 0, curCount = 0;
 		PriorityQueue<TimePoint> timePointQueue = new PriorityQueue<TimePoint>();
 		for (Interval interval : intervals) {
+			// insert sequence is important
 			timePointQueue.add(new TimePoint(interval.getBeginMinuteUnit(),
 					true));
 			timePointQueue

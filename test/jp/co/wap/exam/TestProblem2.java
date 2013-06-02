@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import jp.co.wap.exam.lib.Interval;
@@ -14,11 +13,6 @@ import jp.co.wap.exam.lib.Interval;
 public class TestProblem2 {
 
 	List<Interval> intervals = new ArrayList<Interval>();
-
-	@BeforeClass
-	public static void bf() {
-		System.out.println("test on Problem2");
-	}
 
 	@Before
 	public void overhead() {
@@ -35,6 +29,20 @@ public class TestProblem2 {
 		intervals.add(new Interval("09:00", "11:30"));
 		assertEquals("result:", 390,
 				new Problem2().getMaxWorkingTime(intervals));
+		assertEquals("result:", 390,
+				new Problem2().getMaxWorkingTime2(intervals));
+	}
+	
+	@Test
+	public void testGetMaxIntervalOverlapCount1() {
+		intervals.add(new Interval("08:00", "09:00"));
+		intervals.add(new Interval("10:30", "14:00"));
+		intervals.add(new Interval("08:30", "13:30"));
+		intervals.add(new Interval("14:00", "15:30"));
+		assertEquals("result:", 390,
+				new Problem2().getMaxWorkingTime(intervals));
+		assertEquals("result:", 390,
+				new Problem2().getMaxWorkingTime2(intervals));
 	}
 
 	@Test
@@ -42,6 +50,7 @@ public class TestProblem2 {
 		intervals.add(new Interval("08:00", "08:00"));
 		intervals.add(new Interval("08:30", "08:30"));
 		assertEquals("result:", 0, new Problem2().getMaxWorkingTime(intervals));
+		assertEquals("result:", 0, new Problem2().getMaxWorkingTime2(intervals));
 	}
 
 }

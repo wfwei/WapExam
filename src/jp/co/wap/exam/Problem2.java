@@ -9,6 +9,9 @@ import jp.co.wap.exam.lib.Interval;
 
 public class Problem2 {
 
+	/**
+	 * 时间复杂度O(NlogN),空间复杂度:O(1)，需要改变原list元素顺序
+	 */
 	public int getMaxWorkingTime(List<Interval> intervals) {
 		
 		if(intervals == null || intervals.size()==0){
@@ -28,33 +31,28 @@ public class Problem2 {
 		});
 
 		final int max = 24 * 60 + 1;
-		int[] dp = new int[max];
-		int maxn = 0;
-
-		for (int i = 0, ptr = 0; i < dp.length && ptr < intervals.size();) {
-			Interval itv = intervals.get(ptr);
-			if (itv.getEndMinuteUnit() == i) {
-
-				int bt = itv.getBeginMinuteUnit();
-				int et = itv.getEndMinuteUnit();
-				int lastn = 0;
-				if (bt > 0)
-					lastn = dp[bt - 1];
-				if (lastn + itv.getIntervalMinute() > dp[et])
-					dp[et] = lastn + itv.getIntervalMinute();
-				if (dp[et] > maxn)
-					maxn = dp[et];
-				ptr++;
-			} else {
-				if (i > 0 && dp[i] < dp[i - 1])
-					dp[i] = dp[i - 1];
-				i++;
+		final int[] dp = new int[max];
+		
+		int dpi=1;
+		for(Interval itv:intervals){
+			int bt = itv.getBeginMinuteUnit();
+			int et = itv.getEndMinuteUnit();
+			while(dpi<=et){
+				if(dp[dpi]<dp[dpi-1])
+					dp[dpi] = dp[dpi - 1];
+				dpi++;
 			}
+			int lastn = bt > 0?dp[bt-1]:0;
+			if (lastn + itv.getIntervalMinute() > dp[et])
+				dp[et] = lastn + itv.getIntervalMinute();
 		}
 
-		return maxn;
+		return dp[dpi-1];
 	}
 
+	/**
+	 * 时间复杂度O(1),空间复杂度:O(N)
+	 */
 	public int getMaxWorkingTime2(List<Interval> intervals) {
 		
 		if(intervals == null || intervals.size()==0){
@@ -71,28 +69,25 @@ public class Problem2 {
 		}
 
 		final int max = 24 * 60 + 1;
-		int[] dp = new int[max];
-		int maxn = 0;
+		final int[] dp = new int[max];
 
 		for (int i = 1; i < dp.length; i++) {
+			dp[i] = dp[i - 1];
 			if (endTimeMap.containsKey(i)) {
 				for (Interval itv : endTimeMap.get(i)) {
 
 					int bt = itv.getBeginMinuteUnit();
 					int et = itv.getEndMinuteUnit();
-
 					int lastn = bt > 0 ? dp[bt - 1] : 0;
 
 					if (lastn + itv.getIntervalMinute() > dp[et])
 						dp[et] = lastn + itv.getIntervalMinute();
-					if (dp[et] > maxn)
-						maxn = dp[et];
 				}
-			} else
-				dp[i] = dp[i - 1];
+			}
+				
 		}
 
-		return maxn;
+		return dp[max-1];
 	}
 
 }

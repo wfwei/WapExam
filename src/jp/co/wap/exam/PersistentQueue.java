@@ -8,14 +8,16 @@ import java.util.NoSuchElementException;
  * The Queue class represents an immutable first-in-first-out (FIFO) queue of
  * objects.
  * <p>
- * TODO 同步问题
- * 
  * @param <E>
  */
 public class PersistentQueue<E> {
 	private int headIdx, tailIdx;
 	private E head, tail;
 	private List<E> queue;
+	
+	static final class PersisitentList<E> extends LinkedList<E>{
+		//TODO
+	}
 
 	/**
 	 * require default constructor.
